@@ -5,7 +5,20 @@ const { uuid, isUuid } = require("uuidv4");
 const app = express();
 
 app.use(express.json());
+
 app.use(cors());
+
+function validateRepositoryId(request, response, next) {
+	const { id } = request.params;
+
+	if (!isUuid(id)) {
+		return response.status(400).json({ error: "Invalid Repository ID" });
+	}
+
+	return next();
+}
+
+app.use("/repositories/:id", validateRepositoryId);
 
 const repositories = [];
 
